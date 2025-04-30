@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import "./Desktop.css"; // Import the CSS file
+import "./Desktop.css";
 import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
-  TwitterIcon,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
@@ -17,6 +16,11 @@ export const Desktop = (): JSX.Element => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
 
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
 
@@ -30,26 +34,37 @@ export const Desktop = (): JSX.Element => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
 
-    // Example: Sending data to a backend endpoint
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        alert("Message sent successfully!");
-        setFormData({ name: "", email: "", message: "" }); // Reset form
+        setSubmitStatus({
+          type: 'success',
+          message: 'Message sent successfully!'
+        });
+        setFormData({ name: "", email: "", message: "" });
       } else {
-        alert("Failed to send the message. Please try again.");
+        throw new Error(data.error || 'Failed to send message');
       }
     } catch (error) {
-      console.error("Error submitting the form:", error);
-      alert("An error occurred. Please try again.");
+      setSubmitStatus({
+        type: 'error',
+        message: error.message || 'Failed to send message. Please try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -68,17 +83,17 @@ export const Desktop = (): JSX.Element => {
     {
       icon: <FacebookIcon className="w-12 h-12 text-white" />,
       alt: "Facebook",
-      link: "https://www.facebook.com/moxelco", // Facebook link
+      link: "https://www.facebook.com/moxelco",
     },
     {
       icon: <InstagramIcon className="w-12 h-12 text-white" />,
       alt: "Instagram",
-      link: "https://www.instagram.com/moxelco", // Instagram link
+      link: "https://www.instagram.com/moxelco",
     },
     {
       icon: <LinkedinIcon className="w-12 h-12 text-white" />,
       alt: "LinkedIn",
-      link: "https://www.linkedin.com/company/moxelco/", // LinkedIn link
+      link: "https://www.linkedin.com/company/moxelco/",
     },
   ];
 
@@ -113,12 +128,12 @@ export const Desktop = (): JSX.Element => {
                 {navItems.map((item, index) => (
                   <div key={index} className="nav-item">
                     {item === "Home" && (
-                      <a href="https://moxel.co" className="nav-item-text">
+                      <a href="/" className="nav-item-text">
                         {item}
                       </a>
                     )}
                     {item === "About Us" && (
-                      <a href="https://moxel.co/about" className="nav-item-text">
+                      <a href="/about" className="nav-item-text">
                         {item}
                       </a>
                     )}
@@ -163,7 +178,7 @@ export const Desktop = (): JSX.Element => {
                   <div className="work-item-image">
                     <video
                       className="work-item-video"
-                      poster={`./thumbnails/${item.title.toLowerCase()}.jpg`} // Example thumbnail path
+                      poster={`./thumbnails/${item.title.toLowerCase()}.jpg`}
                       muted
                       loop
                       playsInline
@@ -180,7 +195,7 @@ export const Desktop = (): JSX.Element => {
                     {playingIndex !== index && (
                       <div
                         className="play-button-overlay"
-                        onClick={() => setPlayingIndex(index)} // Play the video
+                        onClick={() => setPlayingIndex(index)}
                       >
                         ▶
                       </div>
@@ -188,7 +203,7 @@ export const Desktop = (): JSX.Element => {
                     {playingIndex === index && (
                       <div
                         className="pause-button-overlay"
-                        onClick={() => setPlayingIndex(null)} // Pause the video
+                        onClick={() => setPlayingIndex(null)}
                       >
                         ❚❚
                       </div>
@@ -223,7 +238,7 @@ export const Desktop = (): JSX.Element => {
                     <br />
                     <br />
                     Feel free to reach out to us on our socials as well, if
-  you prefer to start the conversation that way.
+                    you prefer to start the conversation that way.
                   </div>
                 </div>
 
@@ -251,6 +266,7 @@ export const Desktop = (): JSX.Element => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
@@ -258,8 +274,10 @@ export const Desktop = (): JSX.Element => {
                   className="input-field"
                   placeholder="Email"
                   name="email"
+                  type="email"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
 
                 <Textarea
@@ -268,10 +286,23 @@ export const Desktop = (): JSX.Element => {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
+                  required
                 />
 
-                <Button className="send-button" type="submit">
-                  <span className="send-button-text">Send</span>
+                {submitStatus.type && (
+                  <div className={`text-sm ${submitStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+
+                <Button 
+                  className="send-button" 
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  <span className="send-button-text">
+                    {isSubmitting ? 'Sending...' : 'Send'}
+                  </span>
                 </Button>
               </form>
             </CardContent>
@@ -283,9 +314,13 @@ export const Desktop = (): JSX.Element => {
           <div className="footer-container">
             <div className="footer-links">
               {footerLinks.map((link, index) => (
-                <div key={index} className="footer-link-item">
+                <a 
+                  key={index} 
+                  href={link === "PRIVACY POLICY" ? "/privacy" : "/terms"} 
+                  className="footer-link-item"
+                >
                   {link}
-                </div>
+                </a>
               ))}
             </div>
             <div className="footer-copyright">

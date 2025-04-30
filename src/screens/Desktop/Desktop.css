@@ -32,7 +32,8 @@ html {
 .hero-section {
   position: relative;
   width: 100%;
-  height: 800px;
+  height: 100vh;
+  min-height: 800px;
 }
 
 .hero-video {
@@ -75,8 +76,8 @@ html {
 }
 
 .logo-image {
-  height: 40px; /* Adjust height as needed */
-  object-fit: contain; /* Ensure the image scales properly */
+  height: 40px;
+  object-fit: contain;
 }
 
 .nav-item {
@@ -88,12 +89,12 @@ html {
   font-weight: 300;
   color: white;
   font-size: 16px;
-  opacity: 0.6; /* Default opacity */
-  transition: opacity 0.3s ease-in-out; /* Smooth transition for hover effect */
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .nav-item-text:hover {
-  opacity: 0.8; /* Increased opacity on hover */
+  opacity: 0.8;
 }
 
 /* Main Content Section */
@@ -112,7 +113,7 @@ html {
   justify-content: space-between;
   margin-top: 54px;
   margin-bottom: 50px;
-  padding: 0 16px; /* px-4 */
+  padding: 0 16px;
 }
 
 .value-proposition-title {
@@ -128,28 +129,29 @@ html {
 
 .value-proposition-subtitle {
   font-family: 'Outfit', Helvetica;
-  font-weight: 1000; /* font-semibold */
+  font-weight: 1000;
   font-size: 50px;
   text-align: center;
-  margin-top: 32px; /* mt-8 */
-  background: linear-gradient(0deg, rgb(255, 179, 0), rgb(240, 175, 54)); /* Gradient from yellow to orange */
-  -webkit-background-clip: text; /* Clip the gradient to the text */
-  -webkit-text-fill-color: transparent; /* Make the text transparent to show the gradient */
+  margin-top: 32px;
+  background: linear-gradient(0deg, rgb(255, 179, 0), rgb(240, 175, 54));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .value-proposition-description {
   font-family: 'Outfit', Helvetica;
-  font-weight: 100; /* font-extralight */
+  font-weight: 100;
   color: white;
-  font-size: 24px; /* text-4xl */
+  font-size: 24px;
   text-align: center;
-  margin-top: 32px; /* mt-8 */
+  margin-top: 32px;
 }
 
 /* Works Section */
 .works-section {
   width: 100%;
   margin-top: 50px;
+  padding: 0 186px;
 }
 
 .works-title {
@@ -160,16 +162,16 @@ html {
   letter-spacing: var(--h1-letter-spacing);
   line-height: var(--h1-line-height);
   font-style: var(--h1-font-style);
-  margin-bottom: 64px; /* mb-16 */
-  padding: 0 32px; /* px-8 */
+  margin-bottom: 64px;
+  padding: 0 32px;
 }
 
 .works-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px; /* gap-8 */
+  gap: 32px;
   width: 100%;
-  padding: 0 32px; /* px-8 */
+  padding: 0 32px;
 }
 
 .work-item {
@@ -183,7 +185,7 @@ html {
   position: relative;
   overflow: hidden;
   border-radius: 20px;
-  padding-top: 177.78%; /* 9:16 aspect ratio (16 / 9 = 1.7778 * 100) */
+  padding-top: 177.78%;
 }
 
 .work-item-video {
@@ -222,11 +224,11 @@ html {
 }
 
 .pause-button-overlay {
-  display: none; /* Initially hidden */
+  display: none;
 }
 
 .work-item-image:hover .pause-button-overlay {
-  display: flex; /* Show pause button on hover */
+  display: flex;
 }
 
 .play-button-overlay {
@@ -265,9 +267,9 @@ html {
 
 .work-item-type {
   font-family: 'Outfit', Helvetica;
-  font-weight: 300; /* font-thin */
+  font-weight: 300;
   color: white;
-  font-size: 16px; /* text-base */
+  font-size: 16px;
   text-align: center;
   letter-spacing: -0.8px;
 }
@@ -281,17 +283,17 @@ html {
 
 .social-icon {
   cursor: pointer;
-  width: 24px; /* Adjust the width */
-  height: 24px; /* Adjust the height */
+  width: 24px;
+  height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0.5; /* Default opacity */
-  transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
+  opacity: 0.5;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .social-icon:hover {
-  opacity: 0.8; /* Increased opacity on hover */
+  opacity: 0.8;
 }
 
 /* Fade-in animation */
@@ -300,12 +302,12 @@ html {
     opacity: 0;
   }
   to {
-    opacity: 0.5; /* Match the default opacity */
+    opacity: 0.5;
   }
 }
 
 .social-icon {
-  animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 /* Contact Form */
@@ -373,7 +375,7 @@ html {
   margin-top: 45px;
   margin-bottom: 38px;
   padding: 0 186px;
-  opacity: 0.6; /* Set opacity to 60% */
+  opacity: 0.6;
 }
 
 .footer-container {
@@ -389,7 +391,7 @@ html {
   display: flex;
   align-items: center;
   gap: 20px;
-  opacity: 0.8; 
+  opacity: 0.8;
 }
 
 .footer-link-item {
@@ -400,20 +402,20 @@ html {
   text-align: center;
   letter-spacing: -0.8px;
   cursor: pointer;
-  opacity: 0.8; /* Default opacity */
-  transition: opacity 0.3s ease-in-out; /* Smooth transition for hover effect */
+  opacity: 0.8;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .footer-link-item:hover {
-  opacity: 1; /* Increased opacity on hover */
+  opacity: 1;
 }
 
 .footer-link-item {
-  animation: fadeInFooter 0.5s ease-in-out; /* Apply fade-in animation */
+  animation: fadeInFooter 0.5s ease-in-out;
 }
 
 .footer-link-item:hover {
-  animation: fadeOutFooter 0.5s ease-in-out; /* Apply fade-out animation */
+  animation: fadeOutFooter 0.5s ease-in-out;
 }
 
 .footer-copyright {
@@ -424,6 +426,6 @@ html {
   text-align: right;
   letter-spacing: -0.8px;
   opacity: 0.8;
-  cursor: default; /* Normal cursor */
-  user-select: none; /* Prevent text selection */
+  cursor: default;
+  user-select: none;
 }
