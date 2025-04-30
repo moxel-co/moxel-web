@@ -24,6 +24,10 @@
   overflow: hidden;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Hero Section */
 .hero-section {
   position: relative;
@@ -70,15 +74,26 @@
   font-size: 40px;
 }
 
+.logo-image {
+  height: 40px; /* Adjust height as needed */
+  object-fit: contain; /* Ensure the image scales properly */
+}
+
 .nav-item {
   padding: 20px;
 }
 
 .nav-item-text {
   font-family: 'Outfit', Helvetica;
-  font-weight: normal;
+  font-weight: 300;
   color: white;
   font-size: 16px;
+  opacity: 0.6; /* Default opacity */
+  transition: opacity 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.nav-item-text:hover {
+  opacity: 0.8; /* Increased opacity on hover */
 }
 
 /* Main Content Section */
@@ -113,16 +128,18 @@
 
 .value-proposition-subtitle {
   font-family: 'Outfit', Helvetica;
-  font-weight: 600; /* font-semibold */
-  color: white;
+  font-weight: 1000; /* font-semibold */
   font-size: 50px;
   text-align: center;
   margin-top: 32px; /* mt-8 */
+  background: linear-gradient(0deg, yellow, orange); /* Gradient from yellow to orange */
+  -webkit-background-clip: text; /* Clip the gradient to the text */
+  -webkit-text-fill-color: transparent; /* Make the text transparent to show the gradient */
 }
 
 .value-proposition-description {
   font-family: 'Outfit', Helvetica;
-  font-weight: 200; /* font-extralight */
+  font-weight: 100; /* font-extralight */
   color: white;
   font-size: 24px; /* text-4xl */
   text-align: center;
@@ -163,8 +180,76 @@
 
 .work-item-image {
   width: 100%;
-  height: 463px;
-  background-color: #d9d9d9;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding-top: 177.78%; /* 9:16 aspect ratio (16 / 9 = 1.7778 * 100) */
+}
+
+.work-item-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.play-button-overlay,
+.pause-button-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.play-button-overlay:hover,
+.pause-button-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.pause-button-overlay {
+  display: none; /* Initially hidden */
+}
+
+.work-item-image:hover .pause-button-overlay {
+  display: flex; /* Show pause button on hover */
+}
+
+.play-button-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.play-button-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .work-item-title {
@@ -187,4 +272,158 @@
   letter-spacing: -0.8px;
 }
 
-/* Add other styles here for the main content, footer, etc. */
+/* Social Icons */
+.social-icons {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+
+.social-icon {
+  cursor: pointer;
+  width: 24px; /* Adjust the width */
+  height: 24px; /* Adjust the height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.5; /* Default opacity */
+  transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
+}
+
+.social-icon:hover {
+  opacity: 0.8; /* Increased opacity on hover */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5; /* Match the default opacity */
+  }
+}
+
+.social-icon {
+  animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
+}
+
+/* Contact Form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px;
+  width: 525px;
+}
+
+.form-group {
+  display: flex;
+  align-items: start;
+  gap: 3.5px;
+  width: 100%;
+  z-index: 3;
+}
+
+.input-field {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--paragraph-font-family);
+}
+
+.textarea-field {
+  width: 100%;
+  height: 111px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--paragraph-font-family);
+  z-index: 1;
+}
+
+.send-button {
+  width: 100%;
+  padding: 12px 0;
+  z-index: 0;
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(118, 58, 245, 1) 0%, rgba(166, 4, 242, 1) 100%);
+}
+
+.send-button-text {
+  font-family: var(--h2-font-family);
+  font-weight: var(--h2-font-weight);
+  color: white;
+  font-size: var(--h2-font-size);
+  letter-spacing: var(--h2-letter-spacing);
+  line-height: var(--h2-line-height);
+  font-style: var(--h2-font-style);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  margin-top: 45px;
+  margin-bottom: 38px;
+  padding: 0 186px;
+  opacity: 0.6; /* Set opacity to 60% */
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  width: 513px;
+  height: 30px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  opacity: 0.8; 
+}
+
+.footer-link-item {
+  font-family: 'Outfit', Helvetica;
+  font-weight: normal;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: -0.8px;
+  cursor: pointer;
+  opacity: 0.8; /* Default opacity */
+  transition: opacity 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.footer-link-item:hover {
+  opacity: 1; /* Increased opacity on hover */
+}
+
+.footer-link-item {
+  animation: fadeInFooter 0.5s ease-in-out; /* Apply fade-in animation */
+}
+
+.footer-link-item:hover {
+  animation: fadeOutFooter 0.5s ease-in-out; /* Apply fade-out animation */
+}
+
+.footer-copyright {
+  font-family: 'Outfit', Helvetica;
+  font-weight: 300;
+  color: white;
+  font-size: 12px;
+  text-align: right;
+  letter-spacing: -0.8px;
+  opacity: 0.8;
+  cursor: default; /* Normal cursor */
+  user-select: none; /* Prevent text selection */
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Desktop.css"; // Import the CSS file
 import {
   FacebookIcon,
@@ -12,6 +12,51 @@ import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 
 export const Desktop = (): JSX.Element => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Example: Sending data to a backend endpoint
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" }); // Reset form
+      } else {
+        alert("Failed to send the message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+
+  const handlePlay = (index: number) => {
+    setPlayingIndex(index);
+  };
+
   const navItems = ["Home", "About Us", "Contact"];
   const workItems = [
     { title: "Guitar", type: "PRODUCT CONFIGURATOR" },
@@ -23,15 +68,17 @@ export const Desktop = (): JSX.Element => {
     {
       icon: <FacebookIcon className="w-12 h-12 text-white" />,
       alt: "Facebook",
+      link: "https://www.facebook.com/moxelco", // Facebook link
     },
     {
       icon: <InstagramIcon className="w-12 h-12 text-white" />,
       alt: "Instagram",
+      link: "https://www.instagram.com/moxelco", // Instagram link
     },
-    { icon: <TwitterIcon className="w-12 h-12 text-white" />, alt: "Twitter" },
     {
       icon: <LinkedinIcon className="w-12 h-12 text-white" />,
       alt: "LinkedIn",
+      link: "https://www.linkedin.com/company/moxelco/", // LinkedIn link
     },
   ];
 
@@ -55,13 +102,31 @@ export const Desktop = (): JSX.Element => {
             <div className="hero-header-container">
               <div className="logo-container">
                 <div className="w-[60px] h-[60px]" />
-                <div className="logo-text">MOXEL</div>
+                <img
+                  src="./moxel_wordmark_white_h_320x132.png"
+                  alt="Moxel Logo"
+                  className="logo-image"
+                />
               </div>
 
               <nav className="flex items-center">
                 {navItems.map((item, index) => (
                   <div key={index} className="nav-item">
-                    <div className="nav-item-text">{item}</div>
+                    {item === "Home" && (
+                      <a href="https://moxel.co" className="nav-item-text">
+                        {item}
+                      </a>
+                    )}
+                    {item === "About Us" && (
+                      <a href="https://moxel.co/about" className="nav-item-text">
+                        {item}
+                      </a>
+                    )}
+                    {item === "Contact" && (
+                      <a href="#contact-form" className="nav-item-text">
+                        {item}
+                      </a>
+                    )}
                   </div>
                 ))}
               </nav>
@@ -95,7 +160,40 @@ export const Desktop = (): JSX.Element => {
             <div className="works-grid">
               {workItems.map((item, index) => (
                 <div key={index} className="work-item">
-                  <div className="work-item-image" />
+                  <div className="work-item-image">
+                    <video
+                      className="work-item-video"
+                      poster={`./thumbnails/${item.title.toLowerCase()}.jpg`} // Example thumbnail path
+                      muted
+                      loop
+                      playsInline
+                      ref={(video) => {
+                        if (video && index === playingIndex) {
+                          video.play();
+                        } else if (video) {
+                          video.pause();
+                        }
+                      }}
+                    >
+                      <source src="./video-bg.mp4" type="video/mp4" />
+                    </video>
+                    {playingIndex !== index && (
+                      <div
+                        className="play-button-overlay"
+                        onClick={() => setPlayingIndex(index)} // Play the video
+                      >
+                        ▶
+                      </div>
+                    )}
+                    {playingIndex === index && (
+                      <div
+                        className="pause-button-overlay"
+                        onClick={() => setPlayingIndex(null)} // Pause the video
+                      >
+                        ❚❚
+                      </div>
+                    )}
+                  </div>
                   <div className="flex flex-col items-center w-full py-4">
                     <div className="work-item-title">{item.title}</div>
                     <div className="work-item-type">{item.type}</div>
@@ -107,7 +205,7 @@ export const Desktop = (): JSX.Element => {
         </section>
 
         {/* Contact Us Section */}
-        <div className="w-full mt-[100px] px-[186px]">
+        <div id="contact-form" className="w-full mt-[100px] px-[186px]">
           <h2 className="font-h1 font-[number:var(--h1-font-weight)] text-white text-[length:var(--h1-font-size)] tracking-[var(--h1-letter-spacing)] leading-[var(--h1-line-height)] [font-style:var(--h1-font-style)] mb-16">
             CONTACT US
           </h2>
@@ -120,68 +218,77 @@ export const Desktop = (): JSX.Element => {
                     Let&apos;s Chat
                   </div>
                   <div className="opacity-80 [font-family:'Outfit',Helvetica] font-extralight text-white text-base">
-                    Talk To Us To Find Out How We Can Build Something Special
-                    For You To Engage Your Customer In A New, Special Way.
+                    Talk to us to find out how we can build something special
+                    for you to engage your customer in a new, special way.
                     <br />
                     <br />
-                    feel Free To Reach Out To Us On Our Socials As Well, If
-                    You Prefer To Start The Conversation That Way.
+                    Feel free to reach out to us on our socials as well, if
+  you prefer to start the conversation that way.
                   </div>
                 </div>
 
-                <div className="flex items-start gap-[33px]">
+                <div className="social-icons">
                   {socialIcons.map((social, index) => (
-                    <div key={index} className="cursor-pointer">
+                    <a
+                      key={index}
+                      href={social.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-icon"
+                      aria-label={social.alt}
+                    >
                       {social.icon}
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
 
-              <div className="w-[525px] flex flex-col gap-[41px] p-10">
-                <div className="flex flex-col items-start gap-3.5 w-full">
-                  <div className="flex items-start gap-3.5 w-full z-[3]">
-                    <Input
-                      className="flex-1 px-3.5 py-3 bg-[#ffffff0d] rounded-[5px] border border-solid border-[#ffffff33] text-[#ffffff99] font-paragraph"
-                      placeholder="Name"
-                    />
-                  </div>
-
+              <form className="contact-form" onSubmit={handleSubmit}>
+                <div className="form-group">
                   <Input
-                    className="w-full px-3.5 py-3 bg-[#ffffff0d] rounded-[5px] border border-solid border-[#ffffff33] text-[#ffffff99] font-paragraph z-[2]"
-                    placeholder="Email"
+                    className="input-field"
+                    placeholder="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                   />
-
-                  <Textarea
-                    className="w-full h-[111px] px-3.5 py-3 bg-[#ffffff0d] rounded-[5px] border border-solid border-[#ffffff33] text-[#ffffff99] font-paragraph z-[1]"
-                    placeholder="Message"
-                  />
-
-                  <Button className="w-full py-3 z-0 rounded-[5px] [background:linear-gradient(90deg,rgba(118,58,245,1)_0%,rgba(166,4,242,1)_100%)]">
-                    <span className="font-h2 font-[number:var(--h2-font-weight)] text-white text-[length:var(--h2-font-size)] tracking-[var(--h2-letter-spacing)] leading-[var(--h2-line-height)] [font-style:var(--h2-font-style)]">
-                      Send
-                    </span>
-                  </Button>
                 </div>
-              </div>
+
+                <Input
+                  className="input-field"
+                  placeholder="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+
+                <Textarea
+                  className="textarea-field"
+                  placeholder="Message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                />
+
+                <Button className="send-button" type="submit">
+                  <span className="send-button-text">Send</span>
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </div>
 
         {/* Footer */}
-        <footer className="flex w-full justify-end mt-[45px] mb-[38px] px-[186px]">
-          <div className="flex flex-col w-[513px] h-12 items-end justify-between">
-            <div className="flex items-center gap-[30px]">
+        <footer className="footer">
+          <div className="footer-container">
+            <div className="footer-links">
               {footerLinks.map((link, index) => (
-                <div
-                  key={index}
-                  className="[font-family:'Outfit',Helvetica] font-normal text-white text-base text-center tracking-[-0.80px] cursor-pointer"
-                >
+                <div key={index} className="footer-link-item">
                   {link}
                 </div>
               ))}
             </div>
-            <div className="[font-family:'Outfit',Helvetica] font-thin text-white text-base text-right tracking-[-0.80px]">
+            <div className="footer-copyright">
               © 2025 MOXEL PTE LTD ALL RIGHTS RESERVED
             </div>
           </div>
