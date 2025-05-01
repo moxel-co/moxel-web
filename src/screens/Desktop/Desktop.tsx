@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Desktop.css";
 import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
+  MenuIcon,
+  X
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
@@ -23,6 +25,32 @@ export const Desktop = (): JSX.Element => {
   }>({ type: null, message: '' });
 
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Refs for sections that will fade in
+  const valuePropositionRef = useRef<HTMLDivElement>(null);
+  const worksRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      threshold: 0.1
+    });
+
+    // Observe all elements with fade-in class
+    const elements = document.querySelectorAll('.fade-in');
+    elements.forEach(element => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -116,7 +144,6 @@ export const Desktop = (): JSX.Element => {
           <header className="hero-header">
             <div className="hero-header-container">
               <div className="logo-container">
-                <div className="w-[60px] h-[60px]" />
                 <img
                   src="./moxel_wordmark_white_h_320x132.png"
                   alt="Moxel Logo"
@@ -124,7 +151,18 @@ export const Desktop = (): JSX.Element => {
                 />
               </div>
 
-              <nav className="flex items-center">
+              <button 
+                className="mobile-menu-button md:hidden"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6 text-white" />
+                ) : (
+                  <MenuIcon className="h-6 w-6 text-white" />
+                )}
+              </button>
+
+              <nav className={`nav-menu ${isMenuOpen ? 'nav-menu-open' : ''}`}>
                 {navItems.map((item, index) => (
                   <div key={index} className="nav-item">
                     {item === "Home" && (
@@ -152,7 +190,7 @@ export const Desktop = (): JSX.Element => {
         {/* Main Content Section */}
         <section className="main-content">
           {/* Value Proposition */}
-          <div className="value-proposition">
+          <div ref={valuePropositionRef} className="value-proposition fade-in">
             <div className="value-proposition-title">
               Tailoring Your Immersive 3d Product Experience
             </div>
@@ -169,12 +207,12 @@ export const Desktop = (): JSX.Element => {
           </div>
 
           {/* Our Works Section */}
-          <div className="works-section">
+          <div ref={worksRef} className="works-section fade-in">
             <h2 className="works-title">OUR WORKS</h2>
 
             <div className="works-grid">
               {workItems.map((item, index) => (
-                <div key={index} className="work-item">
+                <div key={index} className="work-item fade-in">
                   <div className="work-item-image">
                     <video
                       className="work-item-video"
@@ -220,26 +258,22 @@ export const Desktop = (): JSX.Element => {
         </section>
 
         {/* Contact Us Section */}
-        <div id="contact-form" className="w-full mt-[100px] px-[186px]">
-          <h2 className="font-h1 font-[number:var(--h1-font-weight)] text-white text-[length:var(--h1-font-size)] tracking-[var(--h1-letter-spacing)] leading-[var(--h1-line-height)] [font-style:var(--h1-font-style)] mb-16">
-            CONTACT US
-          </h2>
+        <section ref={contactRef} id="contact-form" className="contact-section fade-in">
+          <h2 className="contact-title">CONTACT US</h2>
 
-          <Card className="w-full bg-[#ffffff0a] rounded-[20px] border-2 border-solid border-[#090c170d] backdrop-blur-[190px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(190px)_brightness(100%)]">
-            <CardContent className="flex flex-row items-center justify-center gap-[30px] p-5">
-              <div className="w-[417px] flex flex-col items-start justify-center gap-[30px]">
-                <div className="flex flex-col gap-2">
-                  <div className="font-h2 font-[number:var(--h2-font-weight)] text-white text-[length:var(--h2-font-size)] tracking-[var(--h2-letter-spacing)] leading-[var(--h2-line-height)] [font-style:var(--h2-font-style)]">
-                    Let&apos;s Chat
-                  </div>
-                  <div className="opacity-80 [font-family:'Outfit',Helvetica] font-extralight text-white text-base">
+          <Card className="contact-card">
+            <CardContent className="contact-card-content">
+              <div className="contact-info">
+                <div className="contact-header">
+                  <h3 className="contact-subtitle">Let's Chat</h3>
+                  <p className="contact-description">
                     Talk to us to find out how we can build something special
                     for you to engage your customer in a new, special way.
                     <br />
                     <br />
                     Feel free to reach out to us on our socials as well, if
                     you prefer to start the conversation that way.
-                  </div>
+                  </p>
                 </div>
 
                 <div className="social-icons">
@@ -259,19 +293,17 @@ export const Desktop = (): JSX.Element => {
               </div>
 
               <form className="contact-form" onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <Input
-                    className="input-field"
-                    placeholder="Name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <Input
+                  className="contact-input"
+                  placeholder="Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
 
                 <Input
-                  className="input-field"
+                  className="contact-input"
                   placeholder="Email"
                   name="email"
                   type="email"
@@ -281,7 +313,7 @@ export const Desktop = (): JSX.Element => {
                 />
 
                 <Textarea
-                  className="textarea-field"
+                  className="contact-textarea"
                   placeholder="Message"
                   name="message"
                   value={formData.message}
@@ -290,24 +322,24 @@ export const Desktop = (): JSX.Element => {
                 />
 
                 {submitStatus.type && (
-                  <div className={`text-sm ${submitStatus.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                  <div className={`submit-status ${submitStatus.type}`}>
                     {submitStatus.message}
                   </div>
                 )}
 
                 <Button 
-                  className="send-button" 
+                  className="submit-button" 
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  <span className="send-button-text">
+                  <span className="submit-button-text">
                     {isSubmitting ? 'Sending...' : 'Send'}
                   </span>
                 </Button>
               </form>
             </CardContent>
           </Card>
-        </div>
+        </section>
 
         {/* Footer */}
         <footer className="footer">

@@ -4,6 +4,7 @@ import nodemailer from 'npm:nodemailer@6.9.9'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
 async function sendEmail(name: string, email: string, message: string) {
@@ -26,7 +27,7 @@ async function sendEmail(name: string, email: string, message: string) {
   const transporter = nodemailer.createTransport({
     host: smtpConfig.host,
     port: parseInt(smtpConfig.port!),
-    secure: false, // upgrade later with STARTTLS
+    secure: false,
     auth: {
       user: smtpConfig.username,
       pass: smtpConfig.password,
@@ -55,17 +56,34 @@ Message: ${message}
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders
+    })
   }
 
   try {
+    // Validate request method
+    if (req.method !== 'POST') {
+      throw new Error('Method not allowed')
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
-    const { name, email, message } = await req.json()
+    // Parse request body
+    let body
+    try {
+      body = await req.json()
+    } catch (e) {
+      throw new Error('Invalid JSON payload')
+    }
+
+    const { name, email, message } = body
 
     // Validate input
     if (!name || !email || !message) {
@@ -83,7 +101,7 @@ Deno.serve(async (req) => {
     await sendEmail(name, email, message)
 
     return new Response(
-      JSON.stringify({ message: 'Message sent successfully' }),
+      JSON.stringify({ success: true, message: 'Message sent successfully' }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -92,10 +110,13 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Function Error:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        success: false, 
+        error: error.message || 'An unexpected error occurred' 
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
+        status: error.status || 400,
       },
     )
   }
