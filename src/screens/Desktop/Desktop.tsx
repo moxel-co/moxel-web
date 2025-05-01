@@ -102,9 +102,9 @@ export const Desktop = (): JSX.Element => {
 
   const navItems = ["Home", "About Us", "Contact"];
   const workItems = [
-    { title: "Guitar", type: "PRODUCT CONFIGURATOR" },
-    { title: "Car", type: "PRODUCT CONFIGURATOR" },
-    { title: "Shirt", type: "PRODUCT CONFIGURATOR" },
+    { title: "Guitar", type: "PRODUCT CONFIGURATOR", thumbnail: "./thumbnails/car.jpg" },
+    { title: "Car", type: "PRODUCT CONFIGURATOR", thumbnail: "./thumbnails/car.jpg" },
+    { title: "Shirt", type: "PRODUCT CONFIGURATOR", thumbnail: "./thumbnails/car.jpg" },
   ];
   const footerLinks = ["PRIVACY POLICY", "TERMS OF USE"];
   const socialIcons = [
@@ -216,7 +216,7 @@ export const Desktop = (): JSX.Element => {
                   <div className="work-item-image">
                     <video
                       className="work-item-video"
-                      poster={`./thumbnails/${item.title.toLowerCase()}.jpg`}
+                      poster={item.thumbnail}
                       muted
                       loop
                       playsInline
