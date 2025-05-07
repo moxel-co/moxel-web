@@ -312,6 +312,17 @@ export const Desktop = (): JSX.Element => {
                   required
                 />
 
+                <select
+                  className="contact-input"
+                  name="enquiretype"
+                  value={formData.enquiretype || "General Enquiry"}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="General Enquiry">General Enquiry</option>
+                  <option value="Demo Request">Demo Request</option>
+                </select>
+
                 <Textarea
                   className="contact-textarea"
                   placeholder="Message"
